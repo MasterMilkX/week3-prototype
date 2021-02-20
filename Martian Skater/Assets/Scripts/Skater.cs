@@ -31,6 +31,10 @@ public class Skater : MonoBehaviour
     public float ollieTime = 0.0f;
     public float tdiff = 0.0f;
     private float maxJumpTime = 0.75f;
+
+    //other tricks
+    public bool inTrick = false;
+    public bool grinding = false;
     
     //game camera control
     public Transform cam;
@@ -101,6 +105,38 @@ public class Skater : MonoBehaviour
         Ollie();
 
 
+        //allow tricks
+        if(inTrick && sprAnim.curAnim.name == "normal"){
+        	inTrick = false;
+        }
+
+        //test tricks
+        if(!sprAnim.animating){sprAnim.animating = true;}
+        
+        //air tricks
+        if(rb.velocity.y != 0){
+        	if(Input.GetKeyDown(actionKey)){
+        		if(Input.GetKey(upKey)){DoTrick("kickflip");}
+        		else if(Input.GetKey(downKey)){DoTrick("360_flip");}
+        		
+        	}
+        }
+        //ground tricks
+        else{
+        	if(Input.GetKey(actionKey)){
+        		if(grinding){
+        			sprAnim.PlayAnim("5-0_grind");
+        		}
+        	}else if(Input.GetKey(downKey)){
+	        	sprAnim.PlayAnim("manual");
+	        }else if(Input.GetKey(upKey)){
+	        	sprAnim.PlayAnim("nose_manual");
+	        }else{
+	        	sprAnim.PlayAnim("normal");
+	        }
+        }
+
+
         //camera movement
         if(transform.position.y > airHeight.position.y){	//if above the max height, follow x + y
         	cam.position = new Vector3(transform.position.x, transform.position.y,camOffset.z);
@@ -141,6 +177,32 @@ public class Skater : MonoBehaviour
         	ollieTime = 0.0f;
         	jumpBarUI.SetActive(false);
         }
+    }
+
+    //perform a trick on the board
+    void DoTrick(string trick){
+    	if(!inTrick){
+    		sprAnim.PlayAnimOnce(trick);
+    		inTrick = true;
+    	}
+    	
+    }
+
+    //check for specific object collisions
+    void OnCollisionEnter2D(Collision2D c){
+    	if(c.gameObject.tag == "rail"){
+    		grinding = true;
+    	}
+
+    	if(inTrick && sprAnim.curAnim.name.Contains("flip")){
+    		Debug.Log("failed!");
+    		inTrick = false;
+    	}
+    }
+    void OnCollisionExit2D(Collision2D c){
+    	if(c.gameObject.tag == "rail"){
+    		grinding = false;
+    	}
     }
 
 }

@@ -40,15 +40,47 @@ public class SpriteAnimator : MonoBehaviour
             CancelInvoke();
             animIndex = 0;
             curAnim = sa;
-            InvokeRepeating("IterateAnimation", 0.0f, 1.0f / curAnim.fps);
+            InvokeRepeating("LoopAnimation", 0.0f, 1.0f / curAnim.fps);
         }
     }
 
-    public void IterateAnimation() {
+    public void LoopAnimation() {
         //reset the index
         animIndex++;
         if(animIndex == curAnim.frames.Length) {
             animIndex = 0;
+        }
+
+        spRend.sprite = curAnim.frames[animIndex];
+
+        //flip the sprite accordingly
+        if (animIndex >= (curAnim.frames.Length / 2) && curAnim.flipHalf)
+            spRend.flipX = true;
+        else if (curAnim.flipped)
+            spRend.flipX = true;
+        else
+            spRend.flipX = false;
+    }
+
+    //only play an animation once
+    public void PlayAnimOnce(string name){
+        SimpleAnimation sa = simAnims[GetAnimation(name)];
+        if(!(curAnim.Equals(sa)) && animating) {
+            CancelInvoke();
+            animIndex = 0;
+            curAnim = sa;
+            InvokeRepeating("IterateAnimation", 0.0f, 1.0f / curAnim.fps);
+        }
+    }
+    //plays through an animation once then goes to a default animation
+    public void IterateAnimation(){
+         //reset the index
+        animIndex++;
+
+        //if at end of animation, stop and go back to default
+        if(animIndex == curAnim.frames.Length) {
+            CancelInvoke();
+            PlayAnim("normal");
         }
 
         spRend.sprite = curAnim.frames[animIndex];
