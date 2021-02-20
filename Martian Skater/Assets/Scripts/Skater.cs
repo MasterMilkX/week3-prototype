@@ -16,12 +16,10 @@ public class Skater : MonoBehaviour
 
     //character controls
     private SpriteAnimator sprAnim;
-
     private Rigidbody2D rb;
 
     //sprite direction
     public string dir = "right";
-    public int moveInput = 0;
 
     //speed
     public float acceleration = 0.25f;
@@ -58,54 +56,22 @@ public class Skater : MonoBehaviour
     void Update()
     {
 
-    	/*
-        transform.Translate(curVelocity * Time.deltaTime);
-
-        if(rb){
-        	rb.velocity = new Vector2(curVelocity.x,rb.velocity.y);
-        }else if(cc){
-        	cc.Move(new Vector2(moveInput,,0) * Time.deltaTime * maxSpeed);
-        }
-        
-
-        //set direction
-        if(Input.GetKey(leftKey)){
-        	moveInput = -1;
-        }
-       	else if(Input.GetKey(rightKey)){
-       		moveInput = 1;
-       	}else{
-       		moveInput = 0;
-       	}
-
-       	//acceleration/deceleration
-       	if (moveInput != 0){
-			curVelocity.x = Mathf.MoveTowards(curVelocity.x, maxSpeed * moveInput, acceleration * Time.deltaTime);
+		//accelerate
+		if(Input.GetKey(rightKey)){
+			if(velocity.x < maxSpeed){
+				velocity.x += acceleration*Time.deltaTime;
+			}
+		}if(Input.GetKey(leftKey)){
+			if(velocity.x > -maxSpeed){
+				velocity.x -= acceleration*Time.deltaTime;
+			}
 		}
-		else{
-			curVelocity.x = Mathf.MoveTowards(curVelocity.x, 0, acceleration * Time.deltaTime);
-		}
-		*/
-
-		/*
-		//set acceleration and speed
-		if(Input.GetKey(leftKey) && velocity.x > -maxSpeed){
-			velocity.x += -acceleration*Time.deltaTime;
-		}else if(Input.GetKey(rightKey) && velocity.x < maxSpeed){
-			velocity.x += acceleration*Time.deltaTime;
-		}
-
-		//cap it
-		if(velocity.x > maxSpeed){velocity.x = maxSpeed;}
-		else if(velocity.x < -maxSpeed){velocity.x = -maxSpeed;}
-
-
 		//decelerate
-		else if(!Input.GetKey(leftKey) && !Input.GetKey(downKey) && velocity.y == 0){
+		if(!Input.GetKey(leftKey) && !Input.GetKey(rightKey) && rb.velocity.y == 0){
 			if(velocity.x > 0){
 				velocity.x -= acceleration*Time.deltaTime;
 			}else if(velocity.x < 0){
-				velocity.x -= -acceleration*Time.deltaTime;
+				velocity.x += acceleration*Time.deltaTime;
 			}
 
 			//hit a wall just reset it
@@ -114,56 +80,26 @@ public class Skater : MonoBehaviour
 			}
 		}
 
+		velocity.y = rb.velocity.y;
+		rb.velocity = velocity;
 
-
-		if(cc){
-			cc.Move(velocity*Time.deltaTime);
-		}else if(rb){
-			if(Mathf.Abs(rb.velocity.x) < maxSpeed){
-				rb.AddForce(velocity);
-			}
-		}
-		*/
-
-		/*
-		if(Input.GetKey(rightKey) && rb.velocity.x < maxSpeed){
-			rb.AddForce(new Vector2(maxSpeed,0));
-		}
-		if(Input.GetKey(leftKey) && rb.velocity.x > -maxSpeed){
-			rb.AddForce(new Vector2(-maxSpeed,0));
-		}
-		*/
-
-		/*
-		float move = 0;
-		if(Input.GetKey(leftKey)){
-			move = -maxSpeed;
-		}else if(Input.GetKey(rightKey)){
-			move = maxSpeed;
-		}
-		rb.velocity = new Vector2(move, rb.velocity.y);
-		*/
+		
 
 		//flip direction
-		if(rb.velocity.x < 0){
+		if(rb.velocity.x < -0.5f){
 			dir = "left";
-			GetComponent<SpriteRenderer>().flipX = true;
-		}else if(rb.velocity.x > 0){
+			transform.eulerAngles = new Vector3(0,180,0);
+			//GetComponent<SpriteRenderer>().flipX = true;
+		}else if(rb.velocity.x > 0.5f){
 			dir = "right";
-			GetComponent<SpriteRenderer>().flipX = false;
+			transform.eulerAngles = new Vector3(0,0,0);
+			//GetComponent<SpriteRenderer>().flipX = false;
 		}
 
 
         //ollie code to allow jumping
         Ollie();
 
-
-       
-       	/*
-        if(Input.GetKeyUp(jumpKey) && rb.velocity.y == 0){
-        	rb.AddForce(new Vector2(0,maxJumpForce));
-        }
-		*/
 
         //camera movement
         if(transform.position.y > airHeight.position.y){	//if above the max height, follow x + y
@@ -201,7 +137,7 @@ public class Skater : MonoBehaviour
         //released 
         if(!Input.GetKey(jumpKey) && ollieTime != 0.0f){
         	float jump = (tdiff > maxJumpTime ? 1.0f : (tdiff / maxJumpTime));		//use percentage to set jump
-        	rb.AddForce(new Vector2(0,jump*maxJumpForce));
+        	rb.AddForce(new Vector2(rb.velocity.x,jump*maxJumpForce));
         	ollieTime = 0.0f;
         	jumpBarUI.SetActive(false);
         }
