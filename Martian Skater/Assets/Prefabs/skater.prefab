@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 7023814392659988536}
   - component: {fileID: 7023814392659988534}
   - component: {fileID: 977863274}
+  - component: {fileID: 977863271}
   m_Layer: 0
   m_Name: skater
   m_TagString: Untagged
@@ -301,16 +302,17 @@ MonoBehaviour:
   jumpKey: 122
   actionKey: 120
   dir: right
-  moveInput: 0
   acceleration: 2
   maxSpeed: 2.5
   velocity: {x: 0, y: 0}
   maxJumpForce: 120
   ollieTime: 0
   tdiff: 0
+  inTrick: 0
+  grinding: 0
   cam: {fileID: 0}
   airHeight: {fileID: 0}
-  camOffset: {x: 0, y: 0, z: -20}
+  camOffset: {x: 0, y: -1.33, z: -20}
   jumpBarUI: {fileID: 1831495660}
 --- !u!70 &977863274
 CapsuleCollider2D:
@@ -328,3 +330,77 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.075}
   m_Size: {x: 0.25, y: 0.45}
   m_Direction: 0
+--- !u!114 &977863271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7023814392659988541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9816a70673a4e69a370dd2dd5138df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simAnims:
+  - name: normal
+    fps: 1
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: 3026316267917049133, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  - name: manual
+    fps: 1
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: -2869349782740864731, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  - name: nose_manual
+    fps: 1
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: 7432474936955526729, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  - name: 5-0_grind
+    fps: 1
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: 395927870852111713, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  - name: 360_flip
+    fps: 7
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: 5680158560783353550, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 1637728245501651962, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: -1096486502334041630, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: -620874066129309775, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 5680158560783353550, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  - name: kickflip
+    fps: 8
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: 5680158560783353550, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: -1096486502334041630, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 5680158560783353550, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: -1096486502334041630, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 5680158560783353550, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  - name: air_flip
+    fps: 9
+    flipped: 0
+    flipHalf: 0
+    frames:
+    - {fileID: 3026316267917049133, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 9116996793317087153, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 8533396188306219238, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: -7501936123275571595, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+    - {fileID: 3026316267917049133, guid: 7bdd05ba79472470aba9ebbeb0d58521, type: 3}
+  curAnim:
+    name: 
+    fps: 0
+    flipped: 0
+    flipHalf: 0
+    frames: []
+  animating: 0

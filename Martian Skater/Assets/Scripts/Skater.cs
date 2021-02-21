@@ -30,7 +30,7 @@ public class Skater : MonoBehaviour
     public float maxJumpForce = 10.0f;
     public float ollieTime = 0.0f;
     public float tdiff = 0.0f;
-    private float maxJumpTime = 0.75f;
+    public float maxJumpTime = 0.65f;
 
     //other tricks
     public bool inTrick = false;
@@ -41,9 +41,14 @@ public class Skater : MonoBehaviour
     public Transform airHeight;				//max air height point for the camera to start following the skater upward
     public Vector3 camOffset;
 
-    //ui
+    //jump ui
     public GameObject jumpBarUI;
     private Image jumpBar;
+
+    //trick ui
+    public Text comboText;
+    public Text pointText;
+    public Text highScore; 
 
     // Start is called before the first frame update
     void Start()
@@ -144,6 +149,11 @@ public class Skater : MonoBehaviour
         	cam.position = new Vector3(transform.position.x+camOffset.x, camOffset.y,camOffset.z);
         }
 
+
+        //reset
+        if(Input.GetKeyDown(KeyCode.R)){
+        	transform.position = airHeight.position;
+        }
     }
 
     //makes the skater ollie higher based on how long the key was held down
