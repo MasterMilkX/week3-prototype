@@ -35,6 +35,14 @@ public class Skater : MonoBehaviour
     //other tricks
     public bool inTrick = false;
     public bool grinding = false;
+    public string combo = "";
+    public int comboVal = 0;
+    public int highScore = 0;
+    private float comboTime = 0;
+    private float comboGrace = 0.5f;		//grace period to string combos together
+    private int comboMultiplier = 1;
+    private bool cancelCombo = false;
+    private bool addContCombo = false;		//added continous combo text (manual, grind) to trick combo string
     
     //game camera control
     public Transform cam;
@@ -46,9 +54,10 @@ public class Skater : MonoBehaviour
     private Image jumpBar;
 
     //trick ui
+    public GameObject cameraUI;
     public Text comboText;
     public Text pointText;
-    public Text highScore; 
+    public Text highScoreText; 
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +66,7 @@ public class Skater : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         //set ui
+        cameraUI.SetActive(true);
         jumpBarUI.SetActive(false);
         jumpBar = jumpBarUI.GetComponent<Image>();
     }
@@ -111,9 +121,11 @@ public class Skater : MonoBehaviour
 
 
         //allow tricks
+        /*
         if(inTrick && sprAnim.curAnim.name == "normal"){
         	inTrick = false;
         }
+        */
 
         //test tricks
         if(!sprAnim.animating){sprAnim.animating = true;}
@@ -121,9 +133,11 @@ public class Skater : MonoBehaviour
         //air tricks
         if(rb.velocity.y != 0){
         	if(Input.GetKeyDown(actionKey)){
-        		if(Input.GetKey(upKey)){DoTrick("kickflip");}
-        		else if(Input.GetKey(downKey)){DoTrick("360_flip");}
-        		
+        		if(Input.GetKey(upKey)){DoTrick("kickflip",30);}
+        		else if(Input.GetKey(downKey)){DoTrick("360_flip",50);}
+        	}
+        	if(!inTrick){
+        		sprAnim.PlayAnim("normal");
         	}
         }
         //ground tricks
@@ -131,13 +145,32 @@ public class Skater : MonoBehaviour
         	if(Input.GetKey(actionKey)){
         		if(grinding){
         			sprAnim.PlayAnim("5-0_grind");
+        			AddToComboContinuous("5-0 grind");
+        			inTrick = true;
         		}
         	}else if(Input.GetKey(downKey)){
 	        	sprAnim.PlayAnim("manual");
+	        	AddToComboContinuous("Manual");
+	        	inTrick = true;
 	        }else if(Input.GetKey(upKey)){
 	        	sprAnim.PlayAnim("nose_manual");
+	        	AddToComboContinuous("Nose Manual");
+	        	inTrick = true;
 	        }else{
-	        	sprAnim.PlayAnim("normal");
+	        	if(grinding){
+	        		AddToComboContinuous("50-50 Grind");
+        		}else{
+        			sprAnim.PlayAnim("normal");
+		        	inTrick = false;
+		        	if(!cancelCombo && comboVal > 0){		//set timer to cancel the combo
+		        		comboTime = Time.time;
+		        		cancelCombo = true;
+		        		addContCombo = false;
+		        	}else if(cancelCombo && (comboVal > 0) && ((Time.time - comboTime) > comboGrace)){		//cancel the combo if given a certain time
+		        		FinishCombo();
+		        	}
+        		}
+	        	
 	        }
         }
 
@@ -186,16 +219,76 @@ public class Skater : MonoBehaviour
         	rb.AddForce(new Vector2(rb.velocity.x,jump*maxJumpForce));
         	ollieTime = 0.0f;
         	jumpBarUI.SetActive(false);
+        	AddToCombo("Ollie",10);
         }
     }
 
     //perform a trick on the board
-    void DoTrick(string trick){
+    void DoTrick(string trick,int pts){
     	if(!inTrick){
     		sprAnim.PlayAnimOnce(trick);
     		inTrick = true;
+    		string tname = char.ToUpper(trick[0]) + trick.Substring(1).Replace('_',' ');
+    		AddToCombo(tname,pts,"#ff0000");
     	}
-    	
+    }
+
+
+    //adds the trick name and the combo pt amount to the ui
+    void AddToCombo(string trick, int pts,string color = "#ffffff"){
+    	//float curComboDiff = Time.time - comboTime;
+    	//if(curComboDiff <= comboGrace){		//within grace period, add to current combo
+    	if(combo == ""){
+    		comboMultiplier = combo.Split('+').Length;
+    		comboVal += pts;
+    		combo += (" + <color=" + color + ">" + trick + "</color>");
+    	}else{								//otherwise count as new combo
+    		//FinishCombo();
+    		comboMultiplier = 1;
+    		comboVal = pts;
+    		combo = "<color=" + color + ">" + trick + "</color>";
+    	}
+    	//set ui text
+    	pointText.text = comboVal.ToString() + " x " + comboMultiplier.ToString();
+    	comboText.text = combo;
+
+    	//reset timer to add next trick
+    	comboTime = Time.time;
+    	cancelCombo = false;
+    }
+
+    //added to continuous combo (manual, grind)
+    void AddToComboContinuous(string trick){
+    	if(!addContCombo){
+    		if(combo != ""){
+    			combo += (" + <color=white>" + trick + "</color>");
+    		}else{
+    			combo = "<color=white>" + trick + "</color>";
+    		}
+    		
+    		addContCombo = true;
+    		comboText.text = combo;
+    	}
+    	comboVal += 1;
+    	pointText.text = comboVal.ToString() + " x " + comboMultiplier.ToString();
+    	cancelCombo = false;
+    }
+
+    //finishes the current combo out
+    void FinishCombo(){
+    	if(comboVal > highScore){
+    		highScore = comboVal;
+    		highScoreText.text = "High Score: " + highScore.ToString();
+    	}
+    	comboVal = 0;
+    	combo = "";
+
+		pointText.text = "0";
+    	comboText.text = "";
+
+    	Debug.Log("end combo");
+
+    	cancelCombo = false;
     }
 
     //check for specific object collisions
@@ -203,11 +296,19 @@ public class Skater : MonoBehaviour
     	if(c.gameObject.tag == "rail"){
     		grinding = true;
     	}
+    	if(c.gameObject.name.Contains("ufo")){
+    		//hop off ufo!
+    	}
+    	if(c.gameObject.name.Contains("rover")){
+    		//the old college try
+    	}
 
+    	/*
     	if(inTrick && sprAnim.curAnim.name.Contains("flip")){
     		Debug.Log("failed!");
     		inTrick = false;
     	}
+    	*/
     }
     void OnCollisionExit2D(Collision2D c){
     	if(c.gameObject.tag == "rail"){

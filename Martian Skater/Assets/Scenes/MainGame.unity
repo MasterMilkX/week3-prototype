@@ -820,7 +820,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 
 --- !u!222 &132094791
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -950,6 +950,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1426353211}
     - target: {fileID: 7023814392659988534, guid: 9af205fec72fa4b1b84f8a237687f793, type: 3}
+      propertyPath: cameraUI
+      value: 
+      objectReference: {fileID: 1952058066}
+    - target: {fileID: 7023814392659988534, guid: 9af205fec72fa4b1b84f8a237687f793, type: 3}
       propertyPath: maxSpeed
       value: 2.75
       objectReference: {fileID: 0}
@@ -963,8 +967,8 @@ PrefabInstance:
       objectReference: {fileID: 132094790}
     - target: {fileID: 7023814392659988534, guid: 9af205fec72fa4b1b84f8a237687f793, type: 3}
       propertyPath: highScore
-      value: 
-      objectReference: {fileID: 125922733}
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7023814392659988534, guid: 9af205fec72fa4b1b84f8a237687f793, type: 3}
       propertyPath: pointText
       value: 
@@ -973,6 +977,10 @@ PrefabInstance:
       propertyPath: camOffset.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7023814392659988534, guid: 9af205fec72fa4b1b84f8a237687f793, type: 3}
+      propertyPath: highScoreText
+      value: 
+      objectReference: {fileID: 125922733}
     - target: {fileID: 7023814392659988539, guid: 9af205fec72fa4b1b84f8a237687f793, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -1334,6 +1342,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rail_2d  (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
+      propertyPath: m_TagString
+      value: rail
+      objectReference: {fileID: 0}
     - target: {fileID: 4395489635115191263, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -1575,6 +1587,10 @@ PrefabInstance:
     - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_Name
       value: 'rail_2d '
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
+      propertyPath: m_TagString
+      value: rail
       objectReference: {fileID: 0}
     - target: {fileID: 4395489635115191263, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_RootOrder
@@ -2212,6 +2228,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rail_2d  (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
+      propertyPath: m_TagString
+      value: rail
+      objectReference: {fileID: 0}
     - target: {fileID: 4395489635115191263, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -2541,6 +2561,10 @@ PrefabInstance:
     - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_Name
       value: rail_2d  (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
+      propertyPath: m_TagString
+      value: rail
       objectReference: {fileID: 0}
     - target: {fileID: 4395489635115191263, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_RootOrder
@@ -3013,6 +3037,10 @@ PrefabInstance:
     - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_Name
       value: rail_2d  (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395489635115191233, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
+      propertyPath: m_TagString
+      value: rail
       objectReference: {fileID: 0}
     - target: {fileID: 4395489635115191263, guid: 3699974fad1194d1997ad4aaad0da761, type: 3}
       propertyPath: m_RootOrder
