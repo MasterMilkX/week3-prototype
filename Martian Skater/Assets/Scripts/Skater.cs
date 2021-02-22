@@ -40,7 +40,7 @@ public class Skater : MonoBehaviour
     public int comboVal = 0;				//current combo value
     public int highScore = 0;				//high score for the session
     private float comboTime = 0;			//time to release the combo
-    private float comboGrace = 0.5f;		//grace period to string combos together
+    private float comboGrace = 0.3f;		//grace period to string combos together
     private int comboMultiplier = 1;		//combo multiplier value
     private bool cancelCombo = false;		//check if combo cancellation in progress (neutral idle state)
     private bool addContCombo = false;		//added continous combo text (manual, grind) to trick combo string
@@ -70,6 +70,16 @@ public class Skater : MonoBehaviour
         cameraUI.SetActive(true);
         jumpBarUI.SetActive(false);
         jumpBar = jumpBarUI.GetComponent<Image>();
+
+        //set high score
+        if(PlayerPrefs.HasKey("highscore")){
+            highScore = PlayerPrefs.GetInt("highscore");
+            highScoreText.text = "High Score: " + highScore.ToString();
+            Debug.Log("High score not found!");
+        }else{
+            highScore = 0;
+            PlayerPrefs.SetInt("highscore", highScore);
+        }
     }
 
     // Update is called once per frame
@@ -135,13 +145,13 @@ public class Skater : MonoBehaviour
         }
         //ground tricks
         else{
-        	if(Input.GetKey(actionKey)){		//5-0 grind 
+        	if(Input.GetKey(actionKey) && System.Math.Round(rb.velocity.x,3) != 0){		//5-0 grind 
         		if(grinding){
         			if(lockedGrind == ""){lockedGrind = "5-0_grind";}
 					AddToComboContinuous("5-0 Grind","green");
         		}
 				//inTrick = true;
-        	}else if(Input.GetKey(downKey)){				//manuals and tail slide
+        	}else if(Input.GetKey(downKey) && System.Math.Round(rb.velocity.x,3) != 0){				//manuals and tail slide
         		if(grinding){
         			if(lockedGrind == ""){lockedGrind = "manual";}
 		        	AddToComboContinuous("Tail Slide", "green");
@@ -150,7 +160,7 @@ public class Skater : MonoBehaviour
 		        	AddToComboContinuous("Manual");
 		        }
 	        	//inTrick = true;
-	        }else if(Input.GetKey(upKey)){					//nose manual and nose slide
+	        }else if(Input.GetKey(upKey) && System.Math.Round(rb.velocity.x,3) != 0){					//nose manual and nose slide
 	        	if(grinding){
 	        		if(lockedGrind == ""){lockedGrind = "nose_manual";}
 	        		AddToComboContinuous("Nose Slide", "green");
@@ -162,7 +172,7 @@ public class Skater : MonoBehaviour
 	        }
 
 	        if(!Input.GetKey(downKey) && !Input.GetKey(upKey)){		//default		
-	        	if(grinding){
+	        	if(grinding && System.Math.Round(rb.velocity.x,3) != 0){
 	        		if(lockedGrind == ""){lockedGrind = "normal";}
 	        		AddToComboContinuous("50-50 Grind","green");
         		}else{
@@ -252,7 +262,8 @@ public class Skater : MonoBehaviour
     	//float curComboDiff = Time.time - comboTime;
     	//if(curComboDiff <= comboGrace){		//within grace period, add to current combo
     	if(comboVal > 0){
-    		comboMultiplier = combo.Split('+').Length;
+    		float pluses = combo.Split('+').Length;
+    		comboMultiplier = (int)(Mathf.Ceil(pluses/2.0f));
     		comboVal += pts;
     		combo += (" + <color=" + color + ">" + trick + "</color>");
     	}else{								//otherwise count as new combo
@@ -310,11 +321,13 @@ public class Skater : MonoBehaviour
     	if(c.gameObject.tag == "rail"){
     		grinding = true;
     	}
-    	if(c.gameObject.name.Contains("ufo")){
+    	if(c.gameObject.name.Contains("ufo") && System.Math.Round(rb.velocity.y,3) != 0){
     		//hop off ufo!
+    		AddToCombo("Pop off UFO!", 100, "#00FFF7");
     	}
-    	if(c.gameObject.name.Contains("rover")){
+    	if(c.gameObject.name.Contains("rover") && System.Math.Round(rb.velocity.y,3) != 0 && c.transform.position.y < transform.position.y){
     		//the old college try
+    		AddToCombo("Over the Rover!", 100, "#00FFF7");
     	}
 
     	/*

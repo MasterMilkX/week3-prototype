@@ -15,7 +15,7 @@ public class Teleport : MonoBehaviour
     //teleport to opposite teleporter
     public void OnTriggerEnter2D(Collider2D c){
     	if(c.gameObject.tag == "player"){
-    		c.transform.position = new Vector3(other.position.x+offset,other.transform.position.y+0.3f,c.transform.position.z);
+    		c.transform.position = new Vector3(other.position.x+offset,other.transform.position.y+0.05f,c.transform.position.z);
     		//c.GetComponent<Rigidbody2D>().AddForce(new Vector2(50*(other.position.x > transform.position.x ? 1 : -1),0));
     	}
     }
