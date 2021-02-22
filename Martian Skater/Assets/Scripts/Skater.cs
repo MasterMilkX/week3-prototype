@@ -142,21 +142,19 @@ public class Skater : MonoBehaviour
         }
         //ground tricks
         else{
-        	if(Input.GetKey(actionKey)){
-        		if(grinding){
-        			sprAnim.PlayAnim("5-0_grind");
-        			AddToComboContinuous("5-0 grind");
-        			inTrick = true;
-        		}
-        	}else if(Input.GetKey(downKey)){
+        	if(grinding && Input.GetKey(actionKey)){		//grind 
+				sprAnim.PlayAnim("5-0_grind");
+				AddToComboContinuous("5-0 grind");
+				//inTrick = true;
+        	}else if(Input.GetKey(downKey)){				//manuals
 	        	sprAnim.PlayAnim("manual");
 	        	AddToComboContinuous("Manual");
-	        	inTrick = true;
+	        	//inTrick = true;
 	        }else if(Input.GetKey(upKey)){
 	        	sprAnim.PlayAnim("nose_manual");
 	        	AddToComboContinuous("Nose Manual");
-	        	inTrick = true;
-	        }else{
+	        	//inTrick = true;
+	        }else if(!Input.GetKey(downKey) && !Input.GetKey(upKey)){		//default		
 	        	if(grinding){
 	        		AddToComboContinuous("50-50 Grind");
         		}else{
@@ -238,7 +236,7 @@ public class Skater : MonoBehaviour
     void AddToCombo(string trick, int pts,string color = "#ffffff"){
     	//float curComboDiff = Time.time - comboTime;
     	//if(curComboDiff <= comboGrace){		//within grace period, add to current combo
-    	if(combo == ""){
+    	if(comboVal > 0){
     		comboMultiplier = combo.Split('+').Length;
     		comboVal += pts;
     		combo += (" + <color=" + color + ">" + trick + "</color>");
@@ -260,7 +258,7 @@ public class Skater : MonoBehaviour
     //added to continuous combo (manual, grind)
     void AddToComboContinuous(string trick){
     	if(!addContCombo){
-    		if(combo != ""){
+    		if(comboVal > 0){
     			combo += (" + <color=white>" + trick + "</color>");
     		}else{
     			combo = "<color=white>" + trick + "</color>";
@@ -289,6 +287,7 @@ public class Skater : MonoBehaviour
     	Debug.Log("end combo");
 
     	cancelCombo = false;
+    	addContCombo = false;
     }
 
     //check for specific object collisions

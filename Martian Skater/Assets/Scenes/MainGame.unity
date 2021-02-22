@@ -1285,6 +1285,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: trash_can
       objectReference: {fileID: 0}
+    - target: {fileID: 865407920789632242, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
+      propertyPath: m_Size.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 865407920789632242, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 865407920789632243, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1530,6 +1538,14 @@ PrefabInstance:
     - target: {fileID: 865407920789632241, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
       propertyPath: m_Name
       value: trash_can (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 865407920789632242, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
+      propertyPath: m_Size.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 865407920789632242, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 865407920789632243, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
       propertyPath: m_RootOrder
@@ -3470,6 +3486,14 @@ PrefabInstance:
     - target: {fileID: 865407920789632241, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
       propertyPath: m_Name
       value: trash_can (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 865407920789632242, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
+      propertyPath: m_Size.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 865407920789632242, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 865407920789632243, guid: e01da9ae7b4be4b51b1318df82b3c12d, type: 3}
       propertyPath: m_RootOrder
