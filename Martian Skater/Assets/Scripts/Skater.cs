@@ -19,45 +19,46 @@ public class Skater : MonoBehaviour
     private Rigidbody2D rb;
 
     //sprite direction
-    public string dir = "right";
+    public string dir = "right";			//direction the player is facing
 
     //speed
-    public float acceleration = 0.25f;
-    public float maxSpeed = 5.0f;
-    public Vector2 velocity = Vector2.zero;
+    public float acceleration = 0.25f;		//acceleration of the player
+    public float maxSpeed = 5.0f;			//maximum horizontal speed of the player
+    public Vector2 velocity = Vector2.zero;	//x axis movement velocity
 
     //jump 
-    public float maxJumpForce = 10.0f;
-    public float ollieTime = 0.0f;
-    public float tdiff = 0.0f;
-    public float maxJumpTime = 0.65f;
+    public float maxJumpForce = 10.0f;		//amount of force to jump in the air and do an ollie
+    public float ollieTime = 0.0f;			//current time button was held down to start the ollie
+    public float tdiff = 0.0f;				//difference in time between first held down ollie button and current time
+    public float maxJumpTime = 0.65f;		//time needed to hold down the ollie button for maximum effect
 
     //other tricks
-    public bool inTrick = false;
-    public bool grinding = false;
-    public string combo = "";
-    public int comboVal = 0;
-    public int highScore = 0;
-    private float comboTime = 0;
+    public bool inTrick = false;			//check if currently in the middle of an air trick 
+    public bool grinding = false;			//check if currently grinding
+    private string lockedGrind = "";		//locked in animation grind
+    public string combo = "";				//current combo text 
+    public int comboVal = 0;				//current combo value
+    public int highScore = 0;				//high score for the session
+    private float comboTime = 0;			//time to release the combo
     private float comboGrace = 0.5f;		//grace period to string combos together
-    private int comboMultiplier = 1;
-    private bool cancelCombo = false;
+    private int comboMultiplier = 1;		//combo multiplier value
+    private bool cancelCombo = false;		//check if combo cancellation in progress (neutral idle state)
     private bool addContCombo = false;		//added continous combo text (manual, grind) to trick combo string
     
     //game camera control
-    public Transform cam;
+    public Transform cam;					//camera that follows the player
     public Transform airHeight;				//max air height point for the camera to start following the skater upward
-    public Vector3 camOffset;
+    public Vector3 camOffset;				//positional offset the camera from the player
 
     //jump ui
-    public GameObject jumpBarUI;
-    private Image jumpBar;
+    public GameObject jumpBarUI;			//whole ui for the jump bar
+    private Image jumpBar;					//actual jump bar image
 
     //trick ui
-    public GameObject cameraUI;
-    public Text comboText;
-    public Text pointText;
-    public Text highScoreText; 
+    public GameObject cameraUI;				//game object for the camera ui 
+    public Text comboText;					//ui text for the combo string
+    public Text pointText;					//ui text for the point system
+    public Text highScoreText; 				//ui text for the high score system
 
     // Start is called before the first frame update
     void Start()
@@ -86,7 +87,7 @@ public class Skater : MonoBehaviour
 			}
 		}
 		//decelerate
-		if(!Input.GetKey(leftKey) && !Input.GetKey(rightKey) && rb.velocity.y == 0){
+		if(!Input.GetKey(leftKey) && !Input.GetKey(rightKey) && System.Math.Round(rb.velocity.y,3) == 0){
 			if(velocity.x > 0){
 				velocity.x -= acceleration*Time.deltaTime;
 			}else if(velocity.x < 0){
@@ -94,22 +95,22 @@ public class Skater : MonoBehaviour
 			}
 
 			//hit a wall just reset it
-			if(rb.velocity.x == 0){
+			if(System.Math.Round(rb.velocity.x,3) == 0){
 				velocity.x = 0;
 			}
 		}
 
+		//APPLY VELOCITIES
 		velocity.y = rb.velocity.y;
 		rb.velocity = velocity;
-
 		
 
 		//flip direction
-		if(rb.velocity.x < -0.5f){
+		if(rb.velocity.x < -0.25f){
 			dir = "left";
 			transform.eulerAngles = new Vector3(0,180,0);
 			//GetComponent<SpriteRenderer>().flipX = true;
-		}else if(rb.velocity.x > 0.5f){
+		}else if(rb.velocity.x > 0.25f){
 			dir = "right";
 			transform.eulerAngles = new Vector3(0,0,0);
 			//GetComponent<SpriteRenderer>().flipX = false;
@@ -119,44 +120,51 @@ public class Skater : MonoBehaviour
         //ollie code to allow jumping
         Ollie();
 
-
-        //allow tricks
-        /*
-        if(inTrick && sprAnim.curAnim.name == "normal"){
-        	inTrick = false;
-        }
-        */
-
-        //test tricks
+        //show animations
         if(!sprAnim.animating){sprAnim.animating = true;}
         
         //air tricks
-        if(rb.velocity.y != 0){
+        if(System.Math.Round(rb.velocity.y,3) != 0){
         	if(Input.GetKeyDown(actionKey)){
         		if(Input.GetKey(upKey)){DoTrick("kickflip",30);}
         		else if(Input.GetKey(downKey)){DoTrick("360_flip",50);}
         	}
-        	if(!inTrick){
+        	else if(!inTrick){
         		sprAnim.PlayAnim("normal");
         	}
         }
         //ground tricks
         else{
-        	if(grinding && Input.GetKey(actionKey)){		//grind 
-				sprAnim.PlayAnim("5-0_grind");
-				AddToComboContinuous("5-0 grind");
+        	if(Input.GetKey(actionKey)){		//5-0 grind 
+        		if(grinding){
+        			if(lockedGrind == ""){lockedGrind = "5-0_grind";}
+					AddToComboContinuous("5-0 Grind","green");
+        		}
 				//inTrick = true;
-        	}else if(Input.GetKey(downKey)){				//manuals
-	        	sprAnim.PlayAnim("manual");
-	        	AddToComboContinuous("Manual");
+        	}else if(Input.GetKey(downKey)){				//manuals and tail slide
+        		if(grinding){
+        			if(lockedGrind == ""){lockedGrind = "manual";}
+		        	AddToComboContinuous("Tail Slide", "green");
+        		}else{
+		        	sprAnim.PlayAnim("manual");
+		        	AddToComboContinuous("Manual");
+		        }
 	        	//inTrick = true;
-	        }else if(Input.GetKey(upKey)){
-	        	sprAnim.PlayAnim("nose_manual");
-	        	AddToComboContinuous("Nose Manual");
-	        	//inTrick = true;
-	        }else if(!Input.GetKey(downKey) && !Input.GetKey(upKey)){		//default		
+	        }else if(Input.GetKey(upKey)){					//nose manual and nose slide
 	        	if(grinding){
-	        		AddToComboContinuous("50-50 Grind");
+	        		if(lockedGrind == ""){lockedGrind = "nose_manual";}
+	        		AddToComboContinuous("Nose Slide", "green");
+	        	}else{
+	        		sprAnim.PlayAnim("nose_manual");
+	        		AddToComboContinuous("Nose Manual");
+	        	}
+	        	//inTrick = true;
+	        }
+
+	        if(!Input.GetKey(downKey) && !Input.GetKey(upKey)){		//default		
+	        	if(grinding){
+	        		if(lockedGrind == ""){lockedGrind = "normal";}
+	        		AddToComboContinuous("50-50 Grind","green");
         		}else{
         			sprAnim.PlayAnim("normal");
 		        	inTrick = false;
@@ -170,6 +178,13 @@ public class Skater : MonoBehaviour
         		}
 	        	
 	        }
+        }
+
+        //set the grind animation
+        if(grinding && lockedGrind != ""){
+        	sprAnim.PlayAnim(lockedGrind);
+        }else if(!grinding && lockedGrind != ""){
+        	lockedGrind = "";
         }
 
 
@@ -227,13 +242,13 @@ public class Skater : MonoBehaviour
     		sprAnim.PlayAnimOnce(trick);
     		inTrick = true;
     		string tname = char.ToUpper(trick[0]) + trick.Substring(1).Replace('_',' ');
-    		AddToCombo(tname,pts,"#ff0000");
+    		AddToCombo(tname,pts,"red");
     	}
     }
 
 
     //adds the trick name and the combo pt amount to the ui
-    void AddToCombo(string trick, int pts,string color = "#ffffff"){
+    void AddToCombo(string trick, int pts,string color = "white"){
     	//float curComboDiff = Time.time - comboTime;
     	//if(curComboDiff <= comboGrace){		//within grace period, add to current combo
     	if(comboVal > 0){
@@ -256,12 +271,12 @@ public class Skater : MonoBehaviour
     }
 
     //added to continuous combo (manual, grind)
-    void AddToComboContinuous(string trick){
+    void AddToComboContinuous(string trick,string color="white"){
     	if(!addContCombo){
     		if(comboVal > 0){
-    			combo += (" + <color=white>" + trick + "</color>");
+    			combo += (" + <color=" + color + ">" + trick + "</color>");
     		}else{
-    			combo = "<color=white>" + trick + "</color>";
+    			combo = "<color=" + color + ">" + trick + "</color>";
     		}
     		
     		addContCombo = true;
@@ -275,7 +290,7 @@ public class Skater : MonoBehaviour
     //finishes the current combo out
     void FinishCombo(){
     	if(comboVal > highScore){
-    		highScore = comboVal;
+    		highScore = comboVal*comboMultiplier;
     		highScoreText.text = "High Score: " + highScore.ToString();
     	}
     	comboVal = 0;
